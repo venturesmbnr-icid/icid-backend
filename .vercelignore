@@ -1,0 +1,4 @@
+.venvICIDBackend
+.vscode
+__pycache__
+tests
