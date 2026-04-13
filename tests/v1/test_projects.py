@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
 # ---------------------------------------------------------------------------
-# Mock data
+# Mock data — matches actual icid schema
+# project_user (singular), user_id bigint
 # ---------------------------------------------------------------------------
 
 MOCK_PROJECT_ROWS = [
@@ -19,29 +20,29 @@ MOCK_PROJECT_DETAIL_ROW = (
     "active",
 )
 
-TEST_USER_ID = "00000000-0000-0000-0000-000000000001"
+DEV_USER_ID = 28  # bigint in DB
 
 
 # ---------------------------------------------------------------------------
-# GET /v1/projects/?user_id=<uuid>
+# GET /v1/projects/?user_id=<int>
 # ---------------------------------------------------------------------------
 
 class TestListProjectsForUser:
     def test_returns_200(self, client):
         with patch("api.queries.projects.run_query", return_value=MOCK_PROJECT_ROWS):
-            response = client.get(f"/v1/projects/?user_id={TEST_USER_ID}")
+            response = client.get(f"/v1/projects/?user_id={DEV_USER_ID}")
         assert response.status_code == 200
 
     def test_response_shape(self, client):
         with patch("api.queries.projects.run_query", return_value=MOCK_PROJECT_ROWS):
-            data = client.get(f"/v1/projects/?user_id={TEST_USER_ID}").json()
+            data = client.get(f"/v1/projects/?user_id={DEV_USER_ID}").json()
         assert data["status"] == "success"
         assert "message" in data
         assert isinstance(data["data"], list)
 
     def test_project_fields_present(self, client):
         with patch("api.queries.projects.run_query", return_value=MOCK_PROJECT_ROWS):
-            projects = client.get(f"/v1/projects/?user_id={TEST_USER_ID}").json()["data"]
+            projects = client.get(f"/v1/projects/?user_id={DEV_USER_ID}").json()["data"]
         for p in projects:
             assert "project_id" in p
             assert "project_name" in p
@@ -51,12 +52,12 @@ class TestListProjectsForUser:
 
     def test_returns_correct_count(self, client):
         with patch("api.queries.projects.run_query", return_value=MOCK_PROJECT_ROWS):
-            projects = client.get(f"/v1/projects/?user_id={TEST_USER_ID}").json()["data"]
+            projects = client.get(f"/v1/projects/?user_id={DEV_USER_ID}").json()["data"]
         assert len(projects) == 3
 
     def test_empty_list_when_no_projects(self, client):
         with patch("api.queries.projects.run_query", return_value=[]):
-            data = client.get(f"/v1/projects/?user_id={TEST_USER_ID}").json()
+            data = client.get(f"/v1/projects/?user_id={DEV_USER_ID}").json()
         assert data["status"] == "success"
         assert data["data"] == []
 
@@ -64,9 +65,13 @@ class TestListProjectsForUser:
         response = client.get("/v1/projects/")
         assert response.status_code == 422
 
+    def test_non_integer_user_id_returns_422(self, client):
+        response = client.get("/v1/projects/?user_id=not-an-int")
+        assert response.status_code == 422
+
     def test_db_failure_returns_500(self, client):
         with patch("api.queries.projects.run_query", return_value=None):
-            response = client.get(f"/v1/projects/?user_id={TEST_USER_ID}")
+            response = client.get(f"/v1/projects/?user_id={DEV_USER_ID}")
         assert response.status_code == 500
 
 

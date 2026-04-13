@@ -1,26 +1,12 @@
 from unittest.mock import patch
 
 # ---------------------------------------------------------------------------
-# Fixtures / helpers
+# Mock data — matches actual icid.users schema (user_id bigint, employer varchar)
 # ---------------------------------------------------------------------------
 
 MOCK_USER_ROWS = [
-    (
-        "00000000-0000-0000-0000-000000000001",
-        "alice@example.com",
-        "Alice",
-        "Smith",
-        "555-0001",
-        "Acme Corp",
-    ),
-    (
-        "00000000-0000-0000-0000-000000000002",
-        "bob@example.com",
-        "Bob",
-        "Jones",
-        "555-0002",
-        "BuildCo",
-    ),
+    (28, "KhanG@magnoleng.pc", "Genghis", "Khan", "(914) 345-6789", "Magnol Engineering PC"),
+    (56, "Nadir.shah@goorkaneng.com", "Nadir", "Shah", "(201) 987-6543", "Goorkan Engineering"),
 ]
 
 
@@ -61,6 +47,12 @@ class TestListAllUsers:
         with patch("api.queries.users.run_query", return_value=MOCK_USER_ROWS):
             users = client.get("/v1/users/").json()["data"]
         assert isinstance(users[0]["user_id"], str)
+        assert users[0]["user_id"] == "28"
+
+    def test_employer_is_company_name(self, client):
+        with patch("api.queries.users.run_query", return_value=MOCK_USER_ROWS):
+            users = client.get("/v1/users/").json()["data"]
+        assert users[0]["employer"] == "Magnol Engineering PC"
 
     def test_empty_list(self, client):
         with patch("api.queries.users.run_query", return_value=[]):

@@ -11,7 +11,7 @@ router = APIRouter(prefix="/v1/projects", tags=["Projects"])
 
 
 @router.get("/", response_model=ProjectListResponse)
-def list_projects_for_user(user_id: str):
+def list_projects_for_user(user_id: int):
     """
     Return all projects assigned to the given user.
     Query param: ?user_id=<uuid>

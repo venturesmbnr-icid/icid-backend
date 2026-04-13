@@ -1,8 +1,8 @@
 from api.db.runner import run_query
 
 
-def get_projects_for_user(user_id: str):
-    """Return all projects assigned to a given user, including their role on each project."""
+def get_projects_for_user(user_id: int):
+    """Return all projects assigned to a given user, including their role."""
     sql = """
         SELECT
             p.project_id,
@@ -11,8 +11,8 @@ def get_projects_for_user(user_id: str):
             p.status,
             pu.user_role
         FROM icid.projects p
-        JOIN icid.project_users pu ON p.project_id = pu.project_id
-        WHERE pu.user_uuid = %s
+        JOIN icid.project_user pu ON p.project_id = pu.project_id
+        WHERE pu.user_id = %s
         ORDER BY p.project_name;
     """
     return run_query(sql, (user_id,))
