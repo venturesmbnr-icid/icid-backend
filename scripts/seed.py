@@ -78,7 +78,7 @@ PROJECT_ASSIGNMENTS = [
 def seed_client(cur, client: dict):
     cur.execute(
         """
-        INSERT INTO clients (client_id, client_username, client_name, client_email, client_phone, client_role)
+        INSERT INTO icid.clients (client_id, client_username, client_name, client_email, client_phone, client_role)
         VALUES (%(client_id)s, %(client_username)s, %(client_name)s, %(client_email)s, %(client_phone)s, %(client_role)s)
         ON CONFLICT (client_id) DO NOTHING;
         """,
@@ -90,7 +90,7 @@ def seed_client(cur, client: dict):
 def seed_user(cur, user: dict):
     cur.execute(
         """
-        INSERT INTO users (uuid, email, first_name, last_name, phone_number, client_id)
+        INSERT INTO icid.users (uuid, email, first_name, last_name, phone_number, client_id)
         VALUES (%(uuid)s, %(email)s, %(first_name)s, %(last_name)s, %(phone_number)s, %(client_id)s)
         ON CONFLICT (uuid) DO NOTHING;
         """,
@@ -102,7 +102,7 @@ def seed_user(cur, user: dict):
 def seed_project(cur, project: dict):
     cur.execute(
         """
-        INSERT INTO projects (project_id, project_name, project_description, registration_code, borough, status)
+        INSERT INTO icid.projects (project_id, project_name, project_description, registration_code, borough, status)
         VALUES (%(project_id)s, %(project_name)s, %(project_description)s, %(registration_code)s, %(borough)s, %(status)s)
         ON CONFLICT (project_id) DO NOTHING;
         """,
@@ -114,7 +114,7 @@ def seed_project(cur, project: dict):
 def seed_assignment(cur, assignment: dict):
     cur.execute(
         """
-        INSERT INTO project_users (project_id, user_uuid, user_role)
+        INSERT INTO icid.project_users (project_id, user_uuid, user_role)
         VALUES (%(project_id)s, %(user_uuid)s, %(user_role)s)
         ON CONFLICT (project_id, user_uuid) DO NOTHING;
         """,

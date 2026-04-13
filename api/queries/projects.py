@@ -10,8 +10,8 @@ def get_projects_for_user(user_id: str):
             p.borough,
             p.status,
             pu.user_role
-        FROM projects p
-        JOIN project_users pu ON p.project_id = pu.project_id
+        FROM icid.projects p
+        JOIN icid.project_users pu ON p.project_id = pu.project_id
         WHERE pu.user_uuid = %s
         ORDER BY p.project_name;
     """
@@ -28,7 +28,7 @@ def get_project_by_id(project_id: str):
             registration_code,
             borough,
             status
-        FROM projects
+        FROM icid.projects
         WHERE project_id = %s;
     """
     rows = run_query(sql, (project_id,))

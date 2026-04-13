@@ -10,8 +10,8 @@ def get_all_users():
             u.last_name,
             u.phone_number,
             c.client_name AS employer
-        FROM users u
-        JOIN clients c ON u.client_id = c.client_id
+        FROM icid.users u
+        JOIN icid.clients c ON u.client_id = c.client_id
         ORDER BY u.last_name, u.first_name;
     """
     return run_query(sql)
@@ -26,8 +26,8 @@ def get_user_by_id(user_id: str):
             u.last_name,
             u.phone_number,
             c.client_name AS employer
-        FROM users u
-        JOIN clients c ON u.client_id = c.client_id
+        FROM icid.users u
+        JOIN icid.clients c ON u.client_id = c.client_id
         WHERE u.uuid = %s;
     """
     rows = run_query(sql, (user_id,))
