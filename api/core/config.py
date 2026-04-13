@@ -1,18 +1,9 @@
-# app/core/config.py
-# from pydantic import BaseSettings
-from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
+from dotenv import load_dotenv
 
-class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql+asyncpg://mehdis@localhost:5432/icid"
-    TEST_DATABASE_URL: str = "postgresql+asyncpg://mehdis@localhost:5432/icid_test"
+load_dotenv()
 
-    class Config:
-        env_file = ".env.test" if os.getenv("PYTEST_CURRENT_TEST") else ".env"
+DATABASE_URL: str = os.getenv("DATABASE_URL", "")
 
-
-
-settings = Settings()
-
-DATABASE_URL = settings.DATABASE_URL
-TEST_DATABASE_URL = settings.TEST_DATABASE_URL
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set. Add it to your .env file.")

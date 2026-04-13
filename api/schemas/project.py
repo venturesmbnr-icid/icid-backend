@@ -1,11 +1,22 @@
-# app/schemas/project.py
-
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
 
 
-class ProjectBase(BaseModel):
+class ProjectListItem(BaseModel):
+    project_id: str
+    project_name: str
+    borough: Optional[str] = None
+    status: Optional[str] = None
+    user_role: Optional[str] = None
+
+
+class ProjectListResponse(BaseModel):
+    status: str
+    message: str
+    data: list[ProjectListItem]
+
+
+class ProjectDetail(BaseModel):
     project_id: str
     project_name: str
     project_description: Optional[str] = None
@@ -14,25 +25,7 @@ class ProjectBase(BaseModel):
     status: Optional[str] = None
 
 
-class ProjectCreate(ProjectBase):
-    pass
-
-
-class ProjectUpdate(BaseModel):
-    project_name: Optional[str] = None
-    project_description: Optional[str] = None
-    registration_code: Optional[str] = None
-    borough: Optional[str] = None
-    status: Optional[str] = None
-
-class ProjectRead(ProjectBase):
-    created_at: datetime
-    updated_at: datetime
-
-    model_config = {"from_attributes": True}
-
-class ProjectResponse(ProjectBase):
-    created_at: str
-    updated_at: str
-
-    model_config = {"from_attributes": True}
+class ProjectDetailResponse(BaseModel):
+    status: str
+    message: str
+    data: ProjectDetail

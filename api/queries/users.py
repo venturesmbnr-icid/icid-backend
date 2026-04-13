@@ -2,8 +2,33 @@ from api.db.runner import run_query
 
 
 def get_all_users():
-    return run_query("select * from icid.users;")
+    sql = """
+        SELECT
+            u.uuid,
+            u.email,
+            u.first_name,
+            u.last_name,
+            u.phone_number,
+            c.client_name AS employer
+        FROM users u
+        JOIN clients c ON u.client_id = c.client_id
+        ORDER BY u.last_name, u.first_name;
+    """
+    return run_query(sql)
 
 
-def get_user_by_id(user_id):
-    return run_query("select * from icid.users where id = %s;", (user_id,))
+def get_user_by_id(user_id: str):
+    sql = """
+        SELECT
+            u.uuid,
+            u.email,
+            u.first_name,
+            u.last_name,
+            u.phone_number,
+            c.client_name AS employer
+        FROM users u
+        JOIN clients c ON u.client_id = c.client_id
+        WHERE u.uuid = %s;
+    """
+    rows = run_query(sql, (user_id,))
+    return rows[0] if rows else None
