@@ -2,11 +2,8 @@ fastapi==0.116.1
 uvicorn==0.40.0
 starlette==0.47.3
 
-SQLAlchemy==2.0.48
-greenlet==3.2.4
-
 pydantic==2.11.7
-pydantic-settings==2.10.1
+pydantic-settings==2.12.0
 typing_extensions==4.15.0
 
 email-validator==2.3.0
@@ -14,7 +11,9 @@ python-dotenv==1.1.1
 
 psycopg[binary]==3.2.10
 
-sniffio==1.3.1
 anyio==4.10.0
-tabulate==0.9.0
-vercel
+sniffio==1.3.1
+
+# testing
+pytest==8.3.5
+httpx==0.28.1

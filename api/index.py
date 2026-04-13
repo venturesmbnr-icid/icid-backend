@@ -1,45 +1,19 @@
-# api/index.py
-from fastapi import FastAPI, Request
-from vercel.functions import ip_address, geolocation
- 
-app = FastAPI()
- 
-@app.get("/status")
-async def get_test_status(request: Request):
-    return {"status": "success", "message": "Hello, World!"}
+from fastapi import FastAPI
+
+app = FastAPI(title="ICID Reporting API", version="1.0.0")
 
 
-@app.get("/geo")
-async def geo_info(request: Request):
-    info = geolocation(request)
-    return info
-
-
-@app.get("/ip")
-async def get_ip_address(request: Request):
-    ip = ip_address(request)  # you can also pass request.headers
-    return {"ip": ip}
-
-
-# move imports *AFTER* app creation and inside a function
-def include_routers(app):
+def include_routers(app: FastAPI):
     from api.v1.users import router as users_router
-    # from api.v1.clients import router as clients_router
-    # from api.v1.projects import router as projects_router
-    # from api.v1.project_users import router as project_users_router
-    # from api.v1.project_clients import router as project_clients_router
-    # from api.v1.reports import router as reports_router
-    # from api.v1.form_templates import router as form_templates_router
-    # from api.v1.completed_forms import router as completed_forms_router
+    from api.v1.projects import router as projects_router
 
     app.include_router(users_router)
-    # app.include_router(clients_router)
-    # app.include_router(projects_router)
-    # app.include_router(project_users_router)
-    # app.include_router(project_clients_router)
-    # app.include_router(reports_router)
-    # app.include_router(form_templates_router)
-    # app.include_router(completed_forms_router)
+    app.include_router(projects_router)
 
 
 include_routers(app)
+
+
+@app.get("/status")
+def get_status():
+    return {"status": "ok", "message": "ICID API is running"}
